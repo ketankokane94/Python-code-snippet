@@ -1,5 +1,14 @@
 import sys
+import turtle
+import random
 
+COLORS = ['', 'orange', 'yellow', 'green', 'blue', 'blueviolet', 'violet','black','red']
+
+FILL_PEN_WIDTH = 2
+UNFILL_PEN_WIDTH = 8
+
+WINDOW_LENGTH = 800
+SIDE_LENGTH = 200
 
 def get_parameters():
     """
@@ -18,12 +27,35 @@ def get_parameters():
     return sides,fill_no_fill
 
 
+def draw_poly(sides,length):
+    if  sides > 2:
+        for _ in range(sides):
+            turtle.pensize(sides//2)
+            turtle.color(COLORS[random.randint(1,8)])
+            turtle.fd(length/3)
+            turtle.left(10)
+            draw_poly(sides-1,length/2)
+            turtle.right(10)
+            turtle.fd(length/6)
+            turtle.left(360/sides)
+
+
+
+
+
+def stop_program():
+    exit(0)
 def main():
+
     sides, fill_no_fill = get_parameters()
+    sides = 7
+    turtle.tracer(0, 0)
+    turtle.setpos(-100,-350)
+    draw_poly(sides,SIDE_LENGTH)
+    turtle.update()
+    turtle.mainloop()
     #TODO use turtle.write to print names on the screen
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     main()
-
-    
