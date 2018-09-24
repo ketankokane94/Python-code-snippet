@@ -1,14 +1,30 @@
+__author__ = 'KK'
+"""
+CSCI-603 : Polygons Lab-3 (week 4)
+Author : Ketan Kokane
+
+This program first prompts the user for the number of trees required.
+The program then asks the user whether he wants a house at night.
+Based on the input provided, the program draws the trees of types chosen
+in random.
+The house is placed between 2 trees.
+The star is drawn 10 pixels higher than the top of the tallest tree.
+
+The total amount of wood is calculated using the heights of all trees drawn
+
+This value is used to construct a house in the day.
+The sun is drawn above and beside the house.
+
+"""
+#before execution, turtle, sys, and random modules are importedd
 import sys
 import turtle
 import random
 
 COLORS = ['', 'orange', 'yellow', 'green', 'blue', 'blueviolet', 'violet','black','red']
-
-FILL_PEN_WIDTH = 2
-UNFILL_PEN_WIDTH = 8
-
+PEN_SIZE = [2,25]
 WINDOW_LENGTH = 800
-SIDE_LENGTH = 200
+SIDE_LENGTH = 400
 
 def get_parameters():
     """
@@ -24,37 +40,66 @@ def get_parameters():
         sides = 0
         exit(1)
     fill_no_fill = sys.argv[2]
+    if fill_no_fill == 'fill':
+        fill_no_fill = 1
+    else:
+        fill_no_fill = 0
+
     return sides,fill_no_fill
 
 
-def draw_poly(sides,length):
-    if  sides > 2:
+def draw_poly(sides,length,fill_no_fill):
+    """
+
+    :param sides:
+    :param length:
+    :param fill_no_fill:
+    :return:
+    """
+    length_drawn = 0
+    if sides > 2:
+
+        turtle.pensize(PEN_SIZE[fill_no_fill])
+        col =random.randint(1, 8)
+        turtle.color(COLORS[col])
         for _ in range(sides):
-            turtle.pensize(sides//2)
-            turtle.color(COLORS[random.randint(1,8)])
             turtle.fd(length/3)
             turtle.left(10)
-            draw_poly(sides-1,length/2)
+            length_drawn = length_drawn + draw_poly(sides-1,length/2,fill_no_fill)
             turtle.right(10)
             turtle.fd(length/6)
             turtle.left(360/sides)
 
+        return (length * sides) + length_drawn
+    return 0
 
 
 
+def init():
+    """
 
-def stop_program():
-    exit(0)
+    :return:
+    """
+    turtle.setup(width=WINDOW_LENGTH, height=WINDOW_LENGTH, startx=00, starty=00)
+    turtle.up()
+    turtle.setpos(250,250)
+    turtle.write("ketan kokane",font=("Arial", 20, "italic"))
+    turtle.setpos(-100, -200)
+    turtle.down()
+
+
 def main():
+    """
 
+    :return:
+    """
+    init()
     sides, fill_no_fill = get_parameters()
-    sides = 7
     turtle.tracer(0, 0)
-    turtle.setpos(-100,-350)
-    draw_poly(sides,SIDE_LENGTH)
-    turtle.update()
+    print(draw_poly(sides,SIDE_LENGTH,fill_no_fill))
+    turtle.exitonclick()
     turtle.mainloop()
-    #TODO use turtle.write to print names on the screen
+
 
 
 if __name__ == '__main__':
