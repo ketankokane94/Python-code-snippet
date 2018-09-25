@@ -20,11 +20,11 @@ The sun is drawn above and beside the house.
 import sys
 import turtle
 import random
-
-COLORS = ['', 'orange', 'yellow', 'green', 'blue', 'blueviolet', 'violet','black','red']
+#[,3,4,5,6,7,8]
+COLORS = ['', '', '', 'blue', 'orange', 'purple', 'yellow','green','red']
 PEN_SIZE = [2,25]
 WINDOW_LENGTH = 800
-SIDE_LENGTH = 400
+SIDE_LENGTH = 200
 
 def get_parameters():
     """
@@ -40,17 +40,20 @@ def get_parameters():
         sides = 0
         exit(1)
     fill_no_fill = sys.argv[2]
-    if fill_no_fill == 'fill':
-        fill_no_fill = 1
-    else:
-        fill_no_fill = 0
-
-    return sides,fill_no_fill
+    return sides,fill_no_fill == 'fill'
 
 
-def draw_poly(sides,length,fill_no_fill):
+def draw_poly(sides, length):
+    turtle.color(COLORS[sides])
+    turtle.begin_fill()
+    for _ in range(sides):
+        turtle.fd(length)
+        turtle.left(360/sides)
+    turtle.end_fill()
+
+
+def draw_pattern(sides,length,fill_no_fill):
     """
-
     :param sides:
     :param length:
     :param fill_no_fill:
@@ -58,16 +61,16 @@ def draw_poly(sides,length,fill_no_fill):
     """
     length_drawn = 0
     if sides > 2:
-
-        turtle.pensize(PEN_SIZE[fill_no_fill])
-        col =random.randint(1, 8)
-        turtle.color(COLORS[col])
+        turn = 20
+        if fill_no_fill:
+            draw_poly(sides,length)
         for _ in range(sides):
             turtle.fd(length/3)
-            turtle.left(10)
-            length_drawn = length_drawn + draw_poly(sides-1,length/2,fill_no_fill)
-            turtle.right(10)
-            turtle.fd(length/6)
+            turtle.left(turn)
+            length_drawn = length_drawn + draw_pattern(sides - 1, length / 2, fill_no_fill)
+            turtle.right(turn)
+            turtle.fd(length/3)
+            turtle.fd(length / 3)
             turtle.left(360/sides)
 
         return (length * sides) + length_drawn
@@ -96,11 +99,9 @@ def main():
     init()
     sides, fill_no_fill = get_parameters()
     turtle.tracer(0, 0)
-    print(draw_poly(sides,SIDE_LENGTH,fill_no_fill))
+    print(draw_pattern(sides, SIDE_LENGTH, fill_no_fill))
+    turtle.update()
     turtle.exitonclick()
-    turtle.mainloop()
-
-
 
 if __name__ == '__main__':
     main()
