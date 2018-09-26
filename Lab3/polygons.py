@@ -1,19 +1,20 @@
 __author__ = 'KK'
+__author__ = 'SB'
+
+# for the polygon of side 8 the program takes around ~15 secs to complete
 """
 CSCI-603 : Polygons Lab-3 (week 4)
 Author : Ketan Kokane
+Author : Siddharth Bapat
 
-This program first prompts the user for the number of trees required.
-The program then asks the user whether he wants a house at night.
-Based on the input provided, the program draws the trees of types chosen
-in random.
-The house is placed between 2 trees.
-The star is drawn 10 pixels higher than the top of the tallest tree.
+This program draws the name of the authors on top right corner,
+reads the parameters sides and fill no fill from command line and
+draws the polygons with the given sides, with fill no fill option also,
+creates pattern by drawing the polygons of reducing sides and length until
+no more polygons can be drawn.
 
-The total amount of wood is calculated using the heights of all trees drawn
-
-This value is used to construct a house in the day.
-The sun is drawn above and beside the house.
+The basic pattern used is to draw smaller polygon on one third length of the
+main polygon at an angle of 20 degree.
 
 """
 #before execution, turtle, sys, and random modules are importedd
@@ -28,22 +29,38 @@ SIDE_LENGTH = 200
 
 def get_parameters():
     """
-    reads parameters from command line argument, converts them to the required types and returns
+    reads parameters from command line argument, converts them to the
+    required types and returns
     :return:
     """
+
     if len(sys.argv) < 3:
-        print("this program requires two command line parameters to be passed, sides and fill or no fill")
-    try:
-        sides = int(sys.argv[1])
-    except ValueError:
-        print("wrong value entered for number of sides, terminating the program")
-        sides = 0
+        print("this program requires two command line parameters to be passed,"
+              " sides and fill or no fill")
         exit(1)
-    fill_no_fill = sys.argv[2]
-    return sides,fill_no_fill == 'fill'
+    else:
+        try:
+            sides = int(sys.argv[1])
+        except ValueError:
+            print("wrong value entered for number of sides, terminating the program")
+            sides = 0
+            exit(1)
+        fill_no_fill = sys.argv[2]
+        return sides,fill_no_fill == 'fill'
 
 
-def draw_poly(sides, length):
+def draw_polygon(sides, length):
+    """
+    pre: (0,0) east, down
+    pos: (0,0) east, down
+
+    this is a generic function which draws the polygon with give side
+    and length, also fills it with the color. by accessing the color at the
+    side index of COLOR array
+    :param sides:
+    :param length:
+    :return:
+    """
     turtle.color(COLORS[sides])
     turtle.begin_fill()
     for _ in range(sides):
@@ -54,6 +71,15 @@ def draw_poly(sides, length):
 
 def draw_pattern(sides,length,fill_no_fill):
     """
+    pre: (0,0) east, down
+    pos: (0,0) east, down
+
+    This function is the main driver function which draws the one third length
+    of given polygon, then turns at an angle of 20 degree and recursively
+    draws the polygon of reduced side length. till the side is 2.
+
+    Depending on the fill no fill paramters decides if the polygon is to be
+    filled or not
     :param sides:
     :param length:
     :param fill_no_fill:
@@ -63,11 +89,12 @@ def draw_pattern(sides,length,fill_no_fill):
     if sides > 2:
         turn = 20
         if fill_no_fill:
-            draw_poly(sides,length)
+            draw_polygon(sides,length)
         for _ in range(sides):
+            turtle.color(COLORS[random.randint(3,8)])
             turtle.fd(length/3)
             turtle.left(turn)
-            length_drawn = length_drawn + draw_pattern(sides - 1, length / 2, fill_no_fill)
+            length_drawn += draw_pattern(sides - 1, length / 2, fill_no_fill)
             turtle.right(turn)
             turtle.fd(length/3)
             turtle.fd(length / 3)
@@ -80,20 +107,23 @@ def draw_pattern(sides,length,fill_no_fill):
 
 def init():
     """
-
+    Initialisation function to initialize the turtle window and writes the
+    names of the authors on the screen
     :return:
     """
     turtle.setup(width=WINDOW_LENGTH, height=WINDOW_LENGTH, startx=00, starty=00)
     turtle.up()
-    turtle.setpos(250,250)
+    turtle.setpos(150,250)
     turtle.write("ketan kokane",font=("Arial", 20, "italic"))
+    turtle.setpos(150, 300)
+    turtle.write("siddharth bapat", font=("Arial", 20, "italic"))
     turtle.setpos(-100, -200)
     turtle.down()
 
 
 def main():
     """
-
+    Main driver function of the program
     :return:
     """
     init()
