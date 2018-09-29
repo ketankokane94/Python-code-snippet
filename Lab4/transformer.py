@@ -82,10 +82,31 @@ def generate_call(message,operator):
     elif operator[0] == "D":
         operator, exponent = operator.strip().split(',')
         return duplicate(message,int(operator[1:]),int(exponent))
+    elif operator[0] == "T":
+        operator, exponent = operator.strip().split(',')
+        return swap(message, int(operator[1:]), int(exponent))
 
 
+def swap(message, left, right):
+    """
+    this function swaps the characters at index left and right of the given
+    message
+    :param message:
+    :param left:
+    :param right:
+    :return:
+    """
+    # check if indexes are in required range
+    if 0 <= left < right < len(message):
+        # convert string into a list, so letters can be swapped
+        message = list(message)
+        message[left],message[right] = message[right],message[left]
+        return "".join(message)
+    else:
+        return message
 
-
+print(swap("Ketan",0,3))
+print(generate_call("Ketan","T0,3"))
 #print(generate_call("hello","D0,6"))
 #print(generate_call("ketan","S3,1"))
 
