@@ -155,7 +155,12 @@ def generate_call(message,operator):
     elif operator[0] == "D":
         return duplicate(message,int(operator[1:]),int(exponent))
     elif operator[0] == "T":
-        return swap(message, int(operator[1:]), int(exponent))
+        if "(" in operator:
+            group_size, left = operator.split(')')
+            group_size = group_size[group_size.index('(')+1:]
+            return group_swap(message,int(left),int(exponent),int(group_size) )
+        else:
+            return swap(message, int(operator[1:]), int(exponent))
 
 
 
@@ -164,8 +169,8 @@ def process_message(message, operations):
     message = message.strip('\n')
     for operation in operations:
         if len(operation) > 0:
-            return generate_call(message,operation)
-
+             message = generate_call(message,operation)
+    return message
 
 
 def read_files(message_file,operations_file):
