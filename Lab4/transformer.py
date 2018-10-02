@@ -105,8 +105,49 @@ def swap(message, left, right):
     else:
         return message
 
-print(swap("Ketan",0,3))
-print(generate_call("Ketan","T0,3"))
+
+def get_groups(message, group_size):
+    """
+    this function gets a string and a positive group size and returns the
+    chunks of the same size
+    :param message:
+    :param group_size:
+    :return:
+    """
+    result = []
+    for index in range(0,len(message),group_size):
+        result.append(message[index:group_size+index])
+    return result
+
+def group_swap(message,left,right,group_size):
+    # in case of message length is odd we add one $ character so the string
+    # is even length and can be reversed
+    """
+    This function handles a special case of swap wherein instead of swapping
+    characters in the list, the string is divided into groups and then the
+    individual list elements are swapped
+    :param message:
+    :param left:
+    :param right:
+    :param group_size:
+    :return:
+    """
+
+    if group_size == 1:
+        return swap(message, left, right)
+    else:
+        # in case of message length is odd we add one $ character so the string
+        # is even length and can be reversed
+        if len(message) % 2 == 1:
+            message = message + "$"
+        message = get_groups(message,group_size)
+        return swap(message, left, right)
+
+
+#print(get_groups("Ketan",2))
+print(group_swap("Ketan",0,2,2))
+print(group_swap("n$taKe",0,2,2))
+#print(generate_call("Ketan","T0,3"))
 #print(generate_call("hello","D0,6"))
 #print(generate_call("ketan","S3,1"))
 
