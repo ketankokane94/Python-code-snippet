@@ -142,25 +142,6 @@ def group_swap(message,left,right,group_size):
         return swap(message, left, right)
 
 
-def prompt_user_for_input():
-    pass
-
-
-def get_file_names():
-    if sys.argv == 5:
-        # means user provided all the required params in the command line
-        read_files_and_process(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[
-            4]=='e')
-    else:
-        prompt_user_for_input()
-
-
-
-def process_output(output,output_file):
-    with open(output_file,'a') as out:
-        out.write(output+ '\n')
-    print(output)
-
 
 def generate_call(message,operator):
     """
@@ -202,6 +183,35 @@ def process_message(message, operations,encrypt_message):
     return message
 
 
+
+def prompt_user_for_input():
+
+    message_file = input("please enter the file name of mesages\n")
+    instruction_file = input("please enter the file name of intructions\n")
+    output_file = input("please provide a name for the generated output file\n")
+    encrypt_message = input("are the messages to be encrypted or decrypted "
+                         "<press e "
+          "or d>\n")
+    return message_file,instruction_file,output_file,encrypt_message
+
+
+def get_file_names():
+    if sys.argv == 5:
+        # means user provided all the required params in the command line
+        read_files_and_process(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[
+            4]=='e')
+    else:
+        message_file, instruction_file, output_file, encrypt_message = prompt_user_for_input()
+        read_files_and_process(message_file,instruction_file,output_file,
+                               encrypt_message=='e')
+
+
+def process_output(output,output_file):
+    with open(output_file,'a') as out:
+        out.write(output+ '\n')
+    print(output)
+
+
 def create_output_file(output_file):
     with open(output_file,'w') as f:
         f.close()
@@ -218,4 +228,5 @@ def read_files_and_process(message_file,operations_file,output_file,
             process_output(output,output_file)
 
 
-read_files_and_process('messages.txt','operations.txt','output.txt',True)
+#read_files_and_process('messages.txt','operations.txt','output.txt',True)
+get_file_names()
