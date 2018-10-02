@@ -7,12 +7,53 @@ CSCI-603 : transformer Lab-4 (week 5)
 Author : Ketan Kokane
 Author : Siddharth Bapat
 
+This program uses series of transformations to obscure the a message read 
+from messages.txt file and applies transformations onto message based on 
+instructions provided in operations.txt and produces the output in output.txt
+
+for decrypting the program needs to be provided same operation set to get the original message
+back
 """
 
 import sys
 
 
 OPERATIONS_SEPERATOR = ';'
+
+def subsitute(message, exponent=1):
+    # expected format of this transformation is O<exponent > EG O5
+    """
+    this method is a minor extension of the substitution cipher, wherein
+    every character in the message in replaced by some other character
+    we convert entire message string to corresponding ACSCII value array
+    add exponent to each element and convert the ascii values back to
+    characters
+    :param message:
+    :param exponent:
+    :return:
+    """
+    ascii_values = []
+    for char in message:
+        ascii_values.append(get_shifted_character(char,exponent))
+
+    result = []
+    for ascii_value in ascii_values:
+        result.append(chr(ascii_value))
+    return "".join(result)
+
+
+def get_shifted_character(char, exponent):
+    # take the ascii value of the given index in the string
+    ascii_value_of_character = ord(char)
+    # shift it by the exponent
+    shifted_char = ascii_value_of_character + exponent
+    # adjust the ascii value to keep it between the range of 65 and 90
+    if shifted_char > 90:
+        shifted_char = (shifted_char % 90) + 64
+    elif shifted_char < 65:
+        shifted_char += 26
+    return shifted_char
+
 
 def shift(message, index = 0, exponent = 1):
     '''
@@ -22,15 +63,7 @@ def shift(message, index = 0, exponent = 1):
     :param k:
     :return:
     '''
-    # take the ascii value of the given index in the string
-    ascii_value_of_character = ord(message[index])
-    # shift it by the exponent
-    shifted_char = ascii_value_of_character + exponent
-    # adjust the ascii value to keep it between the range of 65 and 90
-    if shifted_char > 90:
-        (shifted_char % 90)  + 65
-    elif shifted_char < 65:
-        shifted_char += 26
+    shifted_char = get_shifted_character(message[index],exponent)
     # convert the string to the list so the character at the given index can
     # be changed with the new shifted character
     message = list(message)
@@ -91,21 +124,22 @@ def swap(message, left, right):
         return message
 
 
-def split_into_groups(message, group_size):
+def split_into_groups(message, no_of_groups):
     """
     this function gets a string and a positive group size and returns the
     chunks of the same size
     :param message:
-    :param group_size:
+    :param no_of_groups:
     :return:
     """
+    group_size = len(message) // no_of_groups
     result = []
     for index in range(0,len(message),group_size):
         result.append(message[index:group_size+index])
     return result
 
 
-def group_swap(message,left,right,group_size):
+def group_swap(message,left,right,no_of_groups):
     # in case of message length is odd we add one $ character so the string
     # is even length and can be reversed
     """
@@ -115,18 +149,18 @@ def group_swap(message,left,right,group_size):
     :param message:
     :param left:
     :param right:
-    :param group_size:
+    :param no_of_groups:
     :return:
     """
 
-    if group_size == 1:
+    if no_of_groups == 1:
         return swap(message, left, right)
     else:
         # in case of message length is odd we add one $ character so the string
         # is even length and can be reversed
         if len(message) % 2 == 1:
             message = message + "$"
-        message = split_into_groups(message, group_size)
+        message = split_into_groups(message, no_of_groups)
         return swap(message, left, right)
 
 
@@ -199,6 +233,11 @@ def generate_call(message,operator,encrypt_message):
                 return swap(message, int(operator[1:]), exponent)
             else:
                 return swap(message, int(operator[1:]), -exponent)
+    elif operator[0] == "O":
+        if encrypt_message:
+            return subsitute(message,int(operator[1:]))
+        else:
+            return subsitute(message, -int(operator[1:]))
 
 
 def process_message(message, operations,encrypt_message):
@@ -330,8 +369,6 @@ def read_files_and_process(message_file,operations_file,output_file,
             output = process_message(message,operations,encrypt_message)
             # process the output
             process_output(output,output_file)
-
-
 
 
 if __name__ == '__main__':
