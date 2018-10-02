@@ -62,29 +62,7 @@ def duplicate(message,index,exponent=1):
     result = message[:index]
     result += duplicated_character
     result += message[index:]
-    return result
-
-
-def generate_call(message,operator):
-    """
-    this is a helper function which splits the operator to the required
-    format to make call to the shift function and returns its ouput
-    :param message:
-    :param operator:
-    :return:
-    """
-    # the operator is always of the form S8, 9
-    if operator[0] == "S":
-        operator, exponent = operator.strip().split(',')
-        return shift(message,int(operator[1:]),int(exponent))
-    elif operator[0] == "R":
-        return rotate(message,int(operator[1:]))
-    elif operator[0] == "D":
-        operator, exponent = operator.strip().split(',')
-        return duplicate(message,int(operator[1:]),int(exponent))
-    elif operator[0] == "T":
-        operator, exponent = operator.strip().split(',')
-        return swap(message, int(operator[1:]), int(exponent))
+    return "".join(result)
 
 
 def swap(message, left, right):
@@ -119,6 +97,7 @@ def get_groups(message, group_size):
         result.append(message[index:group_size+index])
     return result
 
+
 def group_swap(message,left,right,group_size):
     # in case of message length is odd we add one $ character so the string
     # is even length and can be reversed
@@ -144,11 +123,57 @@ def group_swap(message,left,right,group_size):
         return swap(message, left, right)
 
 
-#print(get_groups("Ketan",2))
-print(group_swap("Ketan",0,2,2))
-print(group_swap("n$taKe",0,2,2))
-#print(generate_call("Ketan","T0,3"))
-#print(generate_call("hello","D0,6"))
-#print(generate_call("ketan","S3,1"))
+def get_file_names():
+    pass
 
 
+def process_output(output):
+    print(output)
+
+
+
+def generate_call(message,operator):
+    """
+    this is a helper function which splits the operator to the required
+    format to make call to the shift function and returns its ouput
+    :param message:
+    :param operator:
+    :return:
+    """
+    # the operator is always of the form S8, 9
+
+    if ',' in operator:
+        operator, exponent = operator.split(',')
+    else:
+        exponent = 1
+    if operator[0] == "S":
+        return shift(message,int(operator[1:]),int(exponent))
+    elif operator[0] == "R":
+        if len(operator) == 1:
+            return rotate(message)
+        return rotate(message, int(operator[1:]))
+    elif operator[0] == "D":
+        return duplicate(message,int(operator[1:]),int(exponent))
+    elif operator[0] == "T":
+        return swap(message, int(operator[1:]), int(exponent))
+
+
+
+def process_message(message, operations):
+    operations = operations.strip().split(';')
+    message = message.strip('\n')
+    for operation in operations:
+        if len(operation) > 0:
+            return generate_call(message,operation)
+
+
+
+def read_files(message_file,operations_file):
+    # need top open 3 files message file and operations files
+    with open(message_file,'r') as message_lines,open(operations_file,'r') as operaions_lines :
+        for message,operations in zip(message_lines,operaions_lines):
+            output = process_message(message,operations)
+            process_output(output)
+
+
+read_files('messages.txt','operations.txt')
