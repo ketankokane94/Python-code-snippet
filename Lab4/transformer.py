@@ -1,3 +1,22 @@
+__author__ = 'KK'
+__author__ = 'SB'
+
+# for the polygon of side 8 the program takes around ~15 secs to complete
+"""
+CSCI-603 : Polygons Lab-3 (week 4)
+Author : Ketan Kokane
+Author : Siddharth Bapat
+This program draws the name of the authors on top right corner,
+reads the parameters sides and fill no fill from command line and
+draws the polygons with the given sides, with fill no fill option also,
+creates pattern by drawing the polygons of reducing sides and length until
+no more polygons can be drawn.
+The basic pattern used is to draw smaller polygon on one third length of the
+main polygon at an angle of 20 degree.
+"""
+
+import sys
+
 """
 Python provides theordfunction to convert a single character to an integer
 ASCIIvalue, and thechrfunction to convert from an ASCII integer to a character.
@@ -123,13 +142,24 @@ def group_swap(message,left,right,group_size):
         return swap(message, left, right)
 
 
-def get_file_names():
+def prompt_user_for_input():
     pass
 
 
-def process_output(output):
-    print(output)
+def get_file_names():
+    if sys.argv == 5:
+        # means user provided all the required params in the command line
+        read_files_and_process(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[
+            4]=='e')
+    else:
+        prompt_user_for_input()
 
+
+
+def process_output(output,output_file):
+    with open(output_file,'a') as out:
+        out.write(output+ '\n')
+    print(output)
 
 
 def generate_call(message,operator):
@@ -163,8 +193,7 @@ def generate_call(message,operator):
             return swap(message, int(operator[1:]), int(exponent))
 
 
-
-def process_message(message, operations):
+def process_message(message, operations,encrypt_message):
     operations = operations.strip().split(';')
     message = message.strip('\n')
     for operation in operations:
@@ -173,12 +202,20 @@ def process_message(message, operations):
     return message
 
 
-def read_files(message_file,operations_file):
+def create_output_file(output_file):
+    with open(output_file,'w') as f:
+        f.close()
+
+
+
+def read_files_and_process(message_file,operations_file,output_file,
+                           encrypt_message):
+    create_output_file(output_file)
     # need top open 3 files message file and operations files
     with open(message_file,'r') as message_lines,open(operations_file,'r') as operaions_lines :
         for message,operations in zip(message_lines,operaions_lines):
-            output = process_message(message,operations)
-            process_output(output)
+            output = process_message(message,operations,encrypt_message)
+            process_output(output,output_file)
 
 
-read_files('messages.txt','operations.txt')
+read_files_and_process('messages.txt','operations.txt','output.txt',True)
