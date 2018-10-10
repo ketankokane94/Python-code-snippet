@@ -1,0 +1,12 @@
+Output:
+ALGORITHM      N              COMPARISONS    MICROSECS      IS SORTED      
+SELECTION      1              0              40             True           
+MERGE SORT     1              0              10             True           
+SELECTION      10             63             59             True           
+MERGE SORT     10             28             77             True           
+SELECTION      100            5148           1488           True           
+MERGE SORT     100            645            1059           True           
+SELECTION      1000           501498         107126         True           
+MERGE SORT     1000           9695           10309          True           
+SELECTION      10000          50014998       456241         True           
+MERGE SORT     10000          130451         73197          True    
