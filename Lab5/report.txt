@@ -1,0 +1,74 @@
+﻿Authors: 
+Ketan Kokane
+Siddharth Bapat
+
+Lab 5 Sorting 
+
+Report on Comparison between Selection sort and Merge sort:
+
+Output:
+ALGORITHM      N              COMPARISONS    MICROSECS      IS SORTED      
+SELECTION      1              0              40             True           
+MERGE SORT     1              0              10             True           
+SELECTION      10             63             59             True           
+MERGE SORT     10             28             77             True           
+SELECTION      100            5148           1488           True           
+MERGE SORT     100            645            1059           True           
+SELECTION      1000           501498         107126         True           
+MERGE SORT     1000           9695           10309          True           
+SELECTION      10000          50014998       456241         True           
+MERGE SORT     10000          130451         73197          True           
+
+
+Selection Sort:
+Selection sort maintains two regions of a list, sorted part and unsorted region, in the first iteration the sorted part is empty and the unsorted part is the entire array.
+With every iteration the algorithm tells to find the minimum element in the unsorted array and add to the sorted array. 
+So after 1st iteration the sorted region has one element, we continue the same until the unsorted array is not exhausted meaning the length of the original array.
+
+Since we find the minimum element n times, and to find the minimum element we need n elements in the array. The time Complexity of selection sort: O(n2) 
+
+Merge Sort:
+Merge sort algorithm uses the “Divide and Conquer” principle. The list is repeatedly divided into 2 halves till the size becomes 1, wherein it uses the heuristic that all list of length 1 are already sorted.
+
+After splitting the list into half when the length is 1, the process of combining the lists to form bigger list starts. So merging operation takes two lists of length m,n and produces a order list of length m + n. By comparing the first element of each list, and removing the smallest element of the two from its respective list and adding in the final resultant list.
+
+Since the algorithm compares n elements of each smaller array, log (n) times as we keep dividing the array size to halves.
+
+Time Complexity : O(nlogn)
+
+Conclusion: Merge Sort is more time efficient than Selection Sort but has a very high space complexity compared to selection sort.
+
+So merge sort would be preferred on machines with parallel architecture or when length of the list is not very large.
+
+Comparisons : 
+Selection sort finds minimum element in the array of size n, n-1 times.
+After finding minimum it compares with the current element hence every run of selection sort will have minimum n - 1 comparisons.
+Now to find Min method: we every time scan less number of elements as the unsorted array becomes smaller. So if N = 5 
+1st iteration we do 5 comparison 
+2nd iteration, 4 comparison
+3rd iteration, 3 comparison
+4th iteration, 2 comparison
+
+Hence find min for array of size N takes [n(n+1) / 2] + 1 iterations.
+
+So in worst case, i.e. when the array is in descending order selection makes
+N - 1 + [n(n-1)/2] + 1 if n > 1
+
+Merge Sort : 
+ As it goes to logarithmic scale is bit difficult to come up with the formula to mention the number of comparisons
+
+
+Calculating time:
+
+By running the problem several time, we found out that on an average for selection sort the implementation takes 946 microseconds when N = 100
+So for N^2 i.e. 10000 operations takes 946 microseconds
+
+Therefore for N = 10^6 i.e. for 10^ 12 operations it would take 946 * 10^8 microseconds 
+Which is = 94600 seconds for selection sort.
+
+For merge sort when N = 100 it takes 648 microseconds
+Meaning for 200(100 * log(100) = 200)  operations it takes 648 microseconds.
+
+Hence for N = 10 ^ 6 number of operations = 6 * 10 ^ 6
+There time required for merge sort would be = 648 * 3 * 10^4 microseconds.
+= 19.44 seconds
