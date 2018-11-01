@@ -9,15 +9,15 @@ each class should have its own test function
 
 • insert keep new - Add item at next location, keeping new data
 • insert keep old - Add item at next location, keeping old data
-• remove oldest - Remove oldest item in RingBuffer
-• remove newest - Remove newest item in RingBuffer
-
 '''
 
 # implement the given functions and use this class to implemenet a stack and
 # queue
 
 from mynode import MyNode
+
+
+
 
 
 class RingBuffer:
@@ -111,6 +111,11 @@ class RingBuffer:
             # now make the last node again point to first node
             newNode.next = head
 
+    def _remove_the_only_node(self):
+        returnValue = self._tail.value
+        self._tail = None
+        self._number_of_nodes = 0
+        return returnValue
 
     def remove_newest(self):
         # in ring buffer we append element to the tail so remove newest means
@@ -118,11 +123,12 @@ class RingBuffer:
         returnValue = None
         if self._number_of_nodes is 0:
             return None
-        self._number_of_nodes -= 1
+
         if self._number_of_nodes is 1:
-            returnValue = self._tail.value
-            self._tail = None
+            return self._remove_the_only_node()
+
         cursor = self._tail.next
+        self._number_of_nodes -=1
 
         #iterate to the second last e
         while cursor.next is not self._tail:
@@ -132,6 +138,24 @@ class RingBuffer:
         returnValue = self._tail.value
         cursor.next = self._tail.next
         self._tail = cursor
+        return returnValue
+
+    def remove_oldest(self):
+        # in ring buffer we append element to the tail so remove oldest means
+        # remove the first added element
+        returnValue = None
+        if self._number_of_nodes is 0:
+            return None
+
+        if self._number_of_nodes is 1:
+            return self._remove_the_only_node()
+
+        head = self._tail.next
+        self._number_of_nodes -= 1
+
+        # now the cursor is the pointing to the first node
+        returnValue = head.value
+        self._tail.next = head.next
         return returnValue
 
 
@@ -204,6 +228,23 @@ def test():
 
     ).remove_newest())
 
+    #removes newest when only one element is contained in the list should
+    # empty the list
+    rb = RingBuffer()
+    rb._add(1)
+    rb.remove_newest()
+    print(rb)
+
+    # remove oldest
+
+    print('remove oldest')
+    print(ring_buffer)
+    print('remove oldest',ring_buffer.remove_oldest())
+    print(ring_buffer)
+    print('remove oldest', ring_buffer.remove_oldest())
+    print(ring_buffer)
+    print('remove oldest', ring_buffer.remove_oldest())
+    print(ring_buffer)
 
 
 if __name__ == '__main__':
