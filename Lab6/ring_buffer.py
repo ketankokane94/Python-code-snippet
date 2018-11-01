@@ -7,16 +7,10 @@ test_router
 
 each class should have its own test function
 
-
-• __str__ - String representation of you RingBuffer
 • insert keep new - Add item at next location, keeping new data
 • insert keep old - Add item at next location, keeping old data
 • remove oldest - Remove oldest item in RingBuffer
 • remove newest - Remove newest item in RingBuffer
-
-• find(value) - Find item if in the list, return a cursor
-• replace(cursor, val) - Replace this location - a use case might be using this after calling find
-
 
 '''
 
@@ -24,9 +18,6 @@ each class should have its own test function
 # queue
 
 from mynode import MyNode
-
-
-
 
 
 class RingBuffer:
@@ -46,20 +37,28 @@ class RingBuffer:
         return self._max_size
 
     def find(self,value):
-        cursor = self._tail
-        while cursor is not None and cursor.next is not None:
+        cursor = self._tail.next
+        while cursor is not self._tail:
             if cursor.value is value:
                 return cursor
             cursor = cursor.next
-
-    def replace(self,cursor,new_value):
-        if cursor is not None:
-            if self.the_cursor_exists_in_the_list(cursor):
-                cursor.value =new_value
-            else:
-                raise Exception('provided cursor is not present in the buffer')
+        # due to our condition the last node does not get searched
+        if self._tail.value is value:
+            return self._tail
         else:
-            raise Exception('cursor cannot be None')
+            return None
+
+
+    def replace(self,cursor, new_value):
+        # should return a true or false value
+        if cursor is not None:
+            if self._the_cursor_exists_in_the_list(cursor):
+                cursor.value = new_value
+                return True
+        else:
+            # cursor was None
+            return False
+
 
     def __str__(self):
         if self.size() is 0:
@@ -74,17 +73,31 @@ class RingBuffer:
         result += ']'
         return result
 
-    def the_cursor_exists_in_the_list(cursor):
-        pass
+    def _the_cursor_exists_in_the_list(self,cursor):
+        if self._number_of_nodes is 0:
+            return False
+        else:
+            # start from the head
+            if self._tail is cursor:
+                return True
+            # if not then look in the rest of the list
+            curr = self._tail.next
+            while curr is not self._tail:
+                if cursor is curr:
+                    return True
+                curr = curr.next
+            return False
+
 
     def _add(self,value):
+        self._number_of_nodes += 1
         # this function is only called by internal implementation and when
         # size is less than then capacity
         if self._tail is None:
             # means this is the first element
             self._tail = MyNode(value)
             self._tail.next = self._tail
-            self._number_of_nodes +=1
+
         else:
             # create a new node
             newNode = MyNode(value)
@@ -129,6 +142,36 @@ def test():
     ring_buffer._add(3)
     ring_buffer._add(4)
     print(ring_buffer)
+
+    # testing find functionality
+    # 1 element which is present
+    print('element '+ str(3) +' present in RingBuffer [ 1 2 3 4 ] ',
+          ring_buffer.find(3) )
+    # 2 element which is present in the end and start
+    print('element ' + str(1) + ' present in RingBuffer [ 1 2 3 4 ]',
+          ring_buffer.find(1))
+    print('element ' + str(4) + ' present in RingBuffer [ 1 2 3 4 ]',
+          ring_buffer.find(4))
+    # 3 element which is not present
+    print('element ' + str(5) + ' present in RingBuffer [ 1 2 3 4 ]',
+          ring_buffer.find(5))
+
+    #print(ring_buffer._the_cursor_exists_in_the_list(ring_buffer.find(1)))
+    #print(ring_buffer._the_cursor_exists_in_the_list(ring_buffer.find(9)))
+    # replace
+    # 1. pass existing cursor to replace function and see if value is updated
+    print(ring_buffer.replace(ring_buffer.find(1),0))
+    print(ring_buffer)
+    # 2. pass None cursor should not update anything
+    print(ring_buffer.replace(ring_buffer.find(9),0))
+    print(ring_buffer)
+    # 3. the structure of the node should not be changed
+    print(ring_buffer.replace(ring_buffer.find(4), 0))
+    print(ring_buffer)
+    print(ring_buffer.replace(ring_buffer.find(0), 1))
+    print(ring_buffer)
+
+
 
 
 
