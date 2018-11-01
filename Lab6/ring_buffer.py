@@ -112,6 +112,27 @@ class RingBuffer:
             newNode.next = head
 
 
+    def remove_newest(self):
+        # in ring buffer we append element to the tail so remove newest means
+        # remove the last added element
+        returnValue = None
+        if self._number_of_nodes is 0:
+            return None
+        self._number_of_nodes -= 1
+        if self._number_of_nodes is 1:
+            returnValue = self._tail.value
+            self._tail = None
+        cursor = self._tail.next
+
+        #iterate to the second last e
+        while cursor.next is not self._tail:
+             cursor = cursor.next
+
+        # now the cursor is the pointing to the second last node
+        returnValue = self._tail.value
+        cursor.next = self._tail.next
+        self._tail = cursor
+        return returnValue
 
 
 
@@ -171,8 +192,17 @@ def test():
     print(ring_buffer.replace(ring_buffer.find(0), 1))
     print(ring_buffer)
 
+    # remove remove_newest
+    print('size of ring buffer before remove',ring_buffer._number_of_nodes)
+    print(ring_buffer)
+    print('removed element:',ring_buffer.remove_newest())
+    print(ring_buffer)
+    print('size of ring buffer after remove', ring_buffer._number_of_nodes)
 
+    #remove when ringBUffer is empty returns None
+    print('remove when ringBUffer is empty should return None :',RingBuffer(
 
+    ).remove_newest())
 
 
 
