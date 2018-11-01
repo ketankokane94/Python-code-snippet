@@ -73,6 +73,9 @@ class RingBuffer:
         result += ']'
         return result
 
+    def is_buffer_full(self):
+        return self.size() is self.capacity()
+
     def _the_cursor_exists_in_the_list(self,cursor):
         if self._number_of_nodes is 0:
             return False
@@ -158,7 +161,20 @@ class RingBuffer:
         self._tail.next = head.next
         return returnValue
 
+    # used by queue
+    def insert_keep_old(self,value):
+        if self.is_buffer_full():
+            pass
+        else:
+            self._add(value)
 
+    # to be used by stack
+    def insert_keep_new(self,value):
+        if self.is_buffer_full():
+            self.remove_newest()
+            self._add(value)
+        else:
+            self._add(value)
 
 
 def test():
