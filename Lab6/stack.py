@@ -54,7 +54,7 @@ class Stack:
         if self.size() < 1:
             raise Exception('peek into a empty stack is not allowed')
         else:
-            return  self.ring_buffer.end_element()
+            return self.ring_buffer.end_element()
 
 
 def test():
