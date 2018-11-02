@@ -1,23 +1,4 @@
-'''
-have to create 4 files
-ringbuffer
-stack
-queue
-test_router
-
-each class should have its own test function
-
-• insert keep new - Add item at next location, keeping new data
-• insert keep old - Add item at next location, keeping old data
-'''
-
-# implement the given functions and use this class to implemenet a stack and
-# queue
-
 from mynode import MyNode
-
-
-
 
 
 class RingBuffer:
@@ -48,7 +29,6 @@ class RingBuffer:
         else:
             return None
 
-
     def replace(self,cursor, new_value):
         # should return a true or false value
         if cursor is not None:
@@ -58,7 +38,6 @@ class RingBuffer:
         else:
             # cursor was None
             return False
-
 
     def __str__(self):
         if self.size() is 0:
@@ -91,7 +70,6 @@ class RingBuffer:
                 curr = curr.next
             return False
 
-
     def _add(self,value):
         self._number_of_nodes += 1
         # this function is only called by internal implementation and when
@@ -123,7 +101,6 @@ class RingBuffer:
     def remove_newest(self):
         # in ring buffer we append element to the tail so remove newest means
         # remove the last added element
-        returnValue = None
         if self._number_of_nodes is 0:
             return None
 
@@ -138,15 +115,14 @@ class RingBuffer:
              cursor = cursor.next
 
         # now the cursor is the pointing to the second last node
-        returnValue = self._tail.value
+        return_value = self._tail.value
         cursor.next = self._tail.next
         self._tail = cursor
-        return returnValue
+        return return_value
 
     def remove_oldest(self):
         # in ring buffer we append element to the tail so remove oldest means
         # remove the first added element
-        returnValue = None
         if self._number_of_nodes is 0:
             return None
 
@@ -157,9 +133,9 @@ class RingBuffer:
         self._number_of_nodes -= 1
 
         # now the cursor is the pointing to the first node
-        returnValue = head.value
+        return_value = head.value
         self._tail.next = head.next
-        return returnValue
+        return return_value
 
     # used by queue
     def insert_keep_old(self,value):
@@ -176,6 +152,17 @@ class RingBuffer:
         else:
             self._add(value)
 
+    def end_element(self):
+        if self.size() > 0:
+            return self._tail.value
+        else:
+            return None
+
+    def start_element(self):
+        if self.size() > 0:
+            return self._tail.next.value
+        else:
+            return None
 
 def test():
     # when a new RingBUffer is created it should have proper Initialisations
