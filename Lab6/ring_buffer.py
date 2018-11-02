@@ -1,6 +1,4 @@
 __author__ = 'KK'
-__author__ = 'SB'
-
 
 """
 CSCI-603 : intrumentation_sort.py Lab-6
@@ -328,6 +326,8 @@ def test():
     print('remove oldest', ring_buffer.remove_oldest())
     print(ring_buffer)
     print('=======================END=======================')
+
+
 
 if __name__ == '__main__':
     test()
