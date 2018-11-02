@@ -207,7 +207,7 @@ class RingBuffer:
     # to be used by stack
     def insert_keep_new(self,value):
         if self.is_buffer_full():
-            self.remove_newest()
+            self.remove_oldest()
             self._add(value)
         else:
             self._add(value)

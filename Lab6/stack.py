@@ -69,7 +69,8 @@ def test():
     print('stack after pushing 3 and 2:', my_stack)
     print('my_stack.max_capacity = ',my_stack.max_capacity)
     my_stack.push(1)
-    print('pushing 1 after max size is reached should replace 2 with 1 :',
+    print('pushing 1 after max size is reached 3 should be removed and 1 '
+          'added :',
           my_stack)
     print('======================== pop elements from stack  '
           '===============')
@@ -94,6 +95,8 @@ def test():
     my_stack.push(5)
     print('peek into stack ', my_stack, end='   returns  ')
     print(my_stack.peek())
+
+
 
 
 if __name__ == '__main__':
