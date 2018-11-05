@@ -28,21 +28,25 @@ def hash_function1(string):
     for char in string:
         sum += ord(char)
         list_of_ord_values.append(ord(char))
-
     sum += get_sum_of_difference(list_of_ord_values)
     return sum
 
+
+
 class Hashmap:
 
-    __slots__ = 'table','numkeys', 'capacity', 'maxload'
+    __slots__ = 'table','numkeys', 'capacity', 'maxload','hashfunction', \
+                'probe_count','collision_count'
 
-    def __init__(self, initial_size=100, maxload=0.7):
+    def __init__(self, hashfunction, initial_size=100, maxload=0.7):
         '''
         Creates an open-addressed hash map of given size and maximum load factor
         :param initial_size: Initial size (default 100)
         :param maxload: Max load factor (default 0.7)
         '''
-
+        self.collision_count = 0
+        self.hashfunction = hashfunction
+        self.probe_count = 0
         self.capacity = initial_size
         self.table = [None for _ in range(self.capacity)]
         self.numkeys = 0
@@ -54,8 +58,8 @@ class Hashmap:
         :param key: Key of new entry
         :param value: Value of new entry
         '''
-        index = self.hash_func(key) % self.capacity
-
+        index = self.hashfunction(key) % self.capacity
+        start = index
         while self.table[index] is not None and \
                         self.table[index] != DELETED and \
                         self.table[index].key != key:
@@ -76,6 +80,11 @@ class Hashmap:
             for entry in oldtable:
                 if entry is not None and entry != DELETED:
                     self.put(entry.key,entry.value)
+        if start!= index:
+            self.collision_count += 1
+        self._increment_probe_count(start,index)
+
+
 
     def remove(self,key):
         '''
@@ -83,7 +92,7 @@ class Hashmap:
         :param key: Key of item to remove
         :return: Value of given key
         '''
-        index = self.hash_func(key) % self.capacity
+        index = self.hashfunction(key) % self.capacity
         while self.table[index] is not None and self.table[index].key != key:
             index += 1
             if index == len(self.table):
@@ -98,12 +107,14 @@ class Hashmap:
         :param key: Key to look up
         :return: Value (or KeyError if key not present)
         '''
-        index = self.hash_func(key) % self.capacity
+        index = self.hashfunction(key) % self.capacity
+        start = index
         while self.table[index] is not None and self.table[index].key != key:
             index += 1
             if index == self.capacity:
                 index = 0
         if self.table[index] is not None:
+            self._increment_probe_count(start,index)
             return self.table[index].value
         else:
             raise KeyError('Key ' + str(key) + ' not present')
@@ -114,11 +125,14 @@ class Hashmap:
         :param key: Key to look up
         :return: Whether key is present (boolean)
         '''
-        index = self.hash_func(key) % self.capacity
+
+        index = self.hashfunction(key) % self.capacity
+        start = index
         while self.table[index] is not None and self.table[index].key != key:
             index += 1
             if index == self.capacity:
                 index = 0
+        self._increment_probe_count(start,index)
         return self.table[index] is not None
 
     def hash_func(self,key):
@@ -134,19 +148,30 @@ class Hashmap:
         #return hash(key)
         return len(key)
 
+    def _increment_probe_count(self, start, index):
+        if start > index:
+            # means wrapping up happened
+            self.probe_count += self.capacity - start
+        self.probe_count += index - start + 1
+
+
 def printMap(map):
     for i in range(map.capacity):
         print(str(i)+": " + str(map.table[i]))
 
 def testMap():
-    map = Hashmap(initial_size=5)
+    map = Hashmap(hash_function1, initial_size=5)
     map.put('apple',1)
     map.put('banana',2)
     map.put('orange',15)
     printMap(map)
+    print('probes = ', map.probe_count)
+    print('collision = ', map.collision_count)
     print(map.contains('apple'))
     print(map.contains('grape'))
     print(map.get('orange'))
+
+
 
     print('--------- adding one more to force table resize ')
     map.put('grape',7)
@@ -161,5 +186,7 @@ def testMap():
     printMap(map)
     print(map.get('grape'))
 
+
+
 if __name__ == '__main__':
-    print(hash_function1('cat'))
+    testMap()
