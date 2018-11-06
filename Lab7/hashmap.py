@@ -130,6 +130,9 @@ class Hashmap:
         self._increment_probe_count(start, index)
 
         if self.numkeys/self.capacity > self.maxload:
+            # before rehashing set the counters to 0
+            self.probe_count = 0
+            self.collision_count = 0
             # rehashing
             oldtable = self.table
             # refresh the table
@@ -140,6 +143,8 @@ class Hashmap:
             for entry in oldtable:
                 if entry is not None and entry != DELETED:
                     self.put(entry.key,entry.value)
+
+
 
 
 
@@ -226,8 +231,8 @@ def read_words_from_dict():
     :return:
     '''
     words = []
-    #with open('alice.txt') as file:
-    with open('/usr/share/dict/words') as file:
+    with open('alice.txt') as file:
+    #with open('/usr/share/dict/words') as file:
         for lines in file:
             # when the number of words increases the performance is really
             # slowed down, so keeping the max limit to 50000
@@ -249,7 +254,7 @@ def test_map_with_hash_function_and_load_factor(hash_functin_name,
     :param words:
     :return:
     '''
-    map = Hashmap(hash_function, initial_size=5000,maxload=load_factor)
+    map = Hashmap(hash_function, initial_size=30000,maxload=load_factor)
     for _ in range(len(words)):
         try:
             word = words[_]
@@ -262,6 +267,7 @@ def test_map_with_hash_function_and_load_factor(hash_functin_name,
     load_factor)
     print('probes = ', map.probe_count)
     print('collision = ', map.collision_count)
+    find_max_word(map)
 
 
 def main():
@@ -286,8 +292,22 @@ def main():
                                                 hash_function2, 0.9, words)
 
 
+def find_max_word(map):
+    max = 0
+    word = ''
+    for i in range(map.capacity):
+        if map.table[i] is not None:
+            if map.table[i].value > max:
+                word = map.table[i].key
+                max = map.table[i].value
+
+    print(max, word)
+
+
+
 if __name__ == '__main__':
     main()
+
 
 # TODO  : dictionary and tabulate the result and upload the code
 
