@@ -17,7 +17,7 @@ class _delobj:
 DELETED = Entry(_delobj(),None)
 
 
-def hash_func(key):
+def hash_function2(key):
     '''
     Not using Python's built in hash function here since we want to
     have repeatable testing...
@@ -31,23 +31,14 @@ def hash_func(key):
     return len(key)
 
 
-def get_sum_of_difference(list_of_ord_values):
-    result = 0
-    for _ in range(len(list_of_ord_values)):
-        if _ is 0:
-            result = list_of_ord_values.pop()
-        else:
-            result -= list_of_ord_values.pop()
-    return result
-
-
 def hash_function1(string):
+    prime_numbers = [179,127,233,283,103]
     sum = 0
-    list_of_ord_values = []
+    _ = 0
     for char in string:
-        sum += ord(char)
-        list_of_ord_values.append(ord(char))
-    sum += get_sum_of_difference(list_of_ord_values)
+        ordinal_value = ord(char)
+        ordinal_value *= prime_numbers[ordinal_value % 5]
+        sum += ordinal_value
     return sum
 
 
@@ -71,14 +62,14 @@ class Hashmap:
         self.numkeys = 0
         self.maxload = maxload
 
-    def put(self,key,value):
+    def put(self,key, value):
         '''
         Adds the given (key,value) to the map, replacing entry with same key if present.
         :param key: Key of new entry
         :param value: Value of new entry
         '''
         index = self.hashfunction(key) % self.capacity
-        print('index for word',key, 'is ',index)
+        #print('index for word',key, 'is ',index)
         start = index
         while self.table[index] is not None and \
                         self.table[index] != DELETED and \
@@ -201,29 +192,47 @@ def testMap():
     print(map.get('grape'))
 
 
-
-
-if __name__ == '__main__':
+def read_words_from_dict():
     words = []
     with open('/usr/share/dict/words') as file:
         for lines in file:
-            if lines is not '':
-                word = re.split('\W+',lines.strip())
-                for w in word:
-                    words.append(w)
-    print(len(words))
+            if lines is not '' and len(words) <= 50000:
+                words.extend(re.split('\W+',lines.strip().lower()))
+    return words
 
-    map = Hashmap(hash_function1, initial_size=236223)
-    for _ in range(10000):
+
+def test_map_with_hash_function_and_load_factor(hash_function1, load_factor,
+                                                words):
+    map = Hashmap(hash_function1, initial_size=30000,maxload=load_factor)
+    for _ in range(len(words)):
         try:
             word = words[_]
             value = map.get(word)
-            map.put(word,value + 1)
+            map.put(word, value + 1)
         except:
-            map.put(word,1)
+            map.put(word, 1)
+    print('================== Results for ========================')
+    print('result with load factor ',load_factor)
     print('probes = ', map.probe_count)
     print('collision = ', map.collision_count)
 
 
+def main():
+    words = read_words_from_dict()
+    test_map_with_hash_function_and_load_factor(hash_function1,0.7,words)
+    test_map_with_hash_function_and_load_factor(hash_function1, 0.8, words)
+    test_map_with_hash_function_and_load_factor(hash_function1, 0.9, words)
 
+if __name__ == '__main__':
+    main()
+
+
+'''
+Send each of these through your main method, testing your two hash functions as well
+ as Python’s builtin hash function over three different maximum load factors of your choice.
+Then, you should collect and report on the data that you have obtained. Compare the results 
+from the different input files, hash functions and load factors in tabular
+ and/or graphical form, putting this in a PDF document.
+
+'''
 
