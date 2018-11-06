@@ -17,18 +17,18 @@ class _delobj:
 DELETED = Entry(_delobj(),None)
 
 
-def hash_function2(key):
-    '''
-    Not using Python's built in hash function here since we want to
-    have repeatable testing...
-    However it is terrible.
-    Assumes keys have a len() though...
-    :param key: Key to store
-    :return: Hash value for that key
-    '''
-    # if we want to switch to Python's hash function, uncomment this:
-    # return hash(key)
-    return len(key)
+def hash_function2(string):
+    prime_numbers = [179, 127, 233, 283, 103]
+    hash = 1
+    _ = 0
+    for char in string:
+        int_value = ord(char) << 3
+        int_value = int_value % prime_numbers[ord(char) % 5]
+        if _ % 2 is 0:
+            hash = hash % 102233
+        _ += 1
+        hash *= int_value
+    return hash
 
 
 def hash_function1(string):
@@ -239,10 +239,19 @@ def main():
                                                 hash_function1, 0.8, words)
     test_map_with_hash_function_and_load_factor('hash function1',
                                                 hash_function1, 0.9, words)
+    test_map_with_hash_function_and_load_factor('hash function2',
+                                                hash_function2, 0.7, words)
+    test_map_with_hash_function_and_load_factor('hash function2',
+                                                hash_function2, 0.8, words)
+    test_map_with_hash_function_and_load_factor('hash function2',
+                                                hash_function2, 0.9, words)
 
 
 if __name__ == '__main__':
     main()
+
+
+
 # TODO, make a new hash function, send the file thru the novels and
 # TODO  : dictionary and tabulate the result and upload the code
 
