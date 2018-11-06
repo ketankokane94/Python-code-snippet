@@ -47,7 +47,7 @@ class Hashmap:
     __slots__ = 'table','numkeys', 'capacity', 'maxload','hashfunction', \
                 'probe_count','collision_count'
 
-    def __init__(self, hashfunction, initial_size=100,
+    def __init__(self, hashfunction = None, initial_size=100,
                  maxload=0.7):
         '''
         Creates an open-addressed hash map of given size and maximum load factor
@@ -55,6 +55,9 @@ class Hashmap:
         :param maxload: Max load factor (default 0.7)
         '''
         self.collision_count = 0
+        if hashfunction is None:
+            # use in built
+            hashfunction = hash
         self.hashfunction = hashfunction
         self.probe_count = 0
         self.capacity = initial_size
@@ -69,7 +72,6 @@ class Hashmap:
         :param value: Value of new entry
         '''
         index = self.hashfunction(key) % self.capacity
-        #print('index for word',key, 'is ',index)
         start = index
         while self.table[index] is not None and \
                         self.table[index] != DELETED and \
@@ -80,8 +82,11 @@ class Hashmap:
         if self.table[index] is None:
             self.numkeys += 1
         self.table[index] = Entry(key,value)
+
         if start != index:
             self.collision_count += 1
+
+        self._increment_probe_count(start, index)
 
         if self.numkeys/self.capacity > self.maxload:
             # rehashing
@@ -95,7 +100,6 @@ class Hashmap:
                 if entry is not None and entry != DELETED:
                     self.put(entry.key,entry.value)
 
-        self._increment_probe_count(start,index)
 
 
 
@@ -154,6 +158,7 @@ class Hashmap:
         if start > index:
             # means wrapping up happened
             self.probe_count += self.capacity - start
+            start = 0
         self.probe_count += index - start + 1
 
 
@@ -201,9 +206,11 @@ def read_words_from_dict():
     return words
 
 
-def test_map_with_hash_function_and_load_factor(hash_function1, load_factor,
+def test_map_with_hash_function_and_load_factor(hash_functin_name,
+                                                hash_function,
+                                                load_factor,
                                                 words):
-    map = Hashmap(hash_function1, initial_size=30000,maxload=load_factor)
+    map = Hashmap(hash_function, initial_size=30000,maxload=load_factor)
     for _ in range(len(words)):
         try:
             word = words[_]
@@ -212,19 +219,34 @@ def test_map_with_hash_function_and_load_factor(hash_function1, load_factor,
         except:
             map.put(word, 1)
     print('================== Results for ========================')
-    print('result with load factor ',load_factor)
+    print('result with ',hash_functin_name, ' with load factor ',\
+    load_factor)
     print('probes = ', map.probe_count)
     print('collision = ', map.collision_count)
 
 
 def main():
     words = read_words_from_dict()
-    test_map_with_hash_function_and_load_factor(hash_function1,0.7,words)
-    test_map_with_hash_function_and_load_factor(hash_function1, 0.8, words)
-    test_map_with_hash_function_and_load_factor(hash_function1, 0.9, words)
+    test_map_with_hash_function_and_load_factor('internal hash function',None,
+                                                0.7, words)
+    test_map_with_hash_function_and_load_factor('internal hash function',
+                                                None, 0.8, words)
+    test_map_with_hash_function_and_load_factor('internal hash function',
+                                                None, 0.9, words)
+    test_map_with_hash_function_and_load_factor('hash function1',
+                                                hash_function1,0.7,words)
+    test_map_with_hash_function_and_load_factor('hash function1',
+                                                hash_function1, 0.8, words)
+    test_map_with_hash_function_and_load_factor('hash function1',
+                                                hash_function1, 0.9, words)
+
 
 if __name__ == '__main__':
     main()
+# TODO, make a new hash function, send the file thru the novels and
+# TODO  : dictionary and tabulate the result and upload the code
+
+
 
 
 '''
