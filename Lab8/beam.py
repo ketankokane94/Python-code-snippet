@@ -11,6 +11,11 @@ class Beam:
         self.total_weight = 0
         self.weights = []
 
-    def calculate_torque(self):
-        pass
+    def add_weight(self,w):
+        if type(w.weight).__name__ != 'int':
+            self.weights.append(w)
+            self.total_weight +=w.weight.total_weight
+        else:
+            self.weights.append(w)
+            self.total_weight += w.weight
 
