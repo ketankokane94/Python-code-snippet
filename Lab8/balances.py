@@ -4,6 +4,7 @@ import turtle
 
 tree_data = {}
 
+
 def read_file():
     with open('test.txt') as file:
         for line in file.readlines():
@@ -12,7 +13,7 @@ def read_file():
             tree_data[line[0]] = line
 
 
-
+#TODO: create a validate function which validates the file
 def create_beam(data):
     beam = Beam(data[0])
     for _ in range(1,len(data),2):
@@ -21,11 +22,9 @@ def create_beam(data):
         if 'B' in data[_+1]:
             w = Weight(create_beam(tree_data[data[_+1]]),data[_])
             beam.add_weight(w)
-            #beam.weights.append(w)
         else:
             w = Weight(int(data[_+1]),data[_])
             beam.add_weight(w)
-            #beam.weights.append(w)
     return beam
 
 
@@ -35,7 +34,7 @@ def align_turtle(my_turtle,forward_length):
     my_turtle.left(90)
 
 
-def drawBeam(beam,my_turtle,vertical_factor = 30):
+def drawBeam(beam,my_turtle, vertical_factor = 30, horizontal_factor = 50):
     '''
     pre 0 0 east
     post 0 0 east
@@ -43,7 +42,7 @@ def drawBeam(beam,my_turtle,vertical_factor = 30):
     :param my_turtle:
     :return:
     '''
-    horizontal_factor = 40
+
     my_turtle.write(beam.name,align="left", font=("Arial", 16, "normal"))
     start = my_turtle.position()
     for weight in beam.weights:
@@ -51,9 +50,8 @@ def drawBeam(beam,my_turtle,vertical_factor = 30):
         print(dis)
         my_turtle.forward(dis)
         if type(weight.weight).__name__ != 'int':
-            vertical_factor +=30
-            align_turtle(my_turtle,vertical_factor)
-            drawBeam(weight.weight,my_turtle)
+            align_turtle(my_turtle,vertical_factor+30)
+            drawBeam(weight.weight,my_turtle,vertical_factor+30,horizontal_factor//2)
             my_turtle.up()
             my_turtle.goto(start)
             my_turtle.setheading(0)
@@ -68,6 +66,20 @@ def drawBeam(beam,my_turtle,vertical_factor = 30):
             my_turtle.down()
 
 
+def see_blank_value_exist(beam):
+    pass
+
+def compute_blank_value():
+    # parse the tree to see if there are any unknown weights
+    #if see_blank_value_exist(beam):
+    if beam.unknown_weight:
+        beam.calculate_torque()
+    else:
+        for weight in beam.weights:
+            if type(weight).__name__ != 'int':
+                if type(weight.weight).__name__ != 'int':
+                    weight.weight.calculate_torque()
+
 
 
 if __name__ == '__main__':
@@ -80,5 +92,6 @@ if __name__ == '__main__':
     my_turtle.up()
     my_turtle.setpos(0,300)
     my_turtle.down()
-    drawBeam(beam,my_turtle)
-    turtle.done()
+    #drawBeam(beam,my_turtle)
+    #turtle.done()
+    compute_blank_value()
