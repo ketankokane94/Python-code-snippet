@@ -2,7 +2,7 @@
 class Beam:
     __slots__ = 'balanced','unknown_weight','total_weight','name','weights'
 
-    def __init__(self,name):
+    def __init__(self, name):
         self.name = name
         self.balanced  = False
         self.unknown_weight = False

@@ -4,6 +4,7 @@ from beam import Beam
 from Weights import Weight
 import turtle
 
+# python dictionary to store data read from text file
 tree_data = {}
 
 
@@ -22,7 +23,7 @@ def create_beam(data):
     # if even then its the location
     # its either the weight or the beam name
         if 'B' in data[_+1]:
-            w = Weight(create_beam(tree_data[data[_+1]]),data[_])
+            w = Weight(create_beam(tree_data[data[_+1]]), data[_])
             beam.add_weight(w)
         else:
             w = Weight(int(data[_+1]),data[_])
@@ -48,7 +49,7 @@ def make_anotation(t, name):
     t.down()
 
 
-def drawBeam(beam,my_turtle, vertical_factor = 10, horizontal_factor = 50):
+def drawBeam(beam, my_turtle, vertical_factor = 10, horizontal_factor = 50):
     '''
     pre 0 0 east
     post 0 0 east
@@ -112,10 +113,11 @@ if __name__ == '__main__':
     beam = create_beam(tree_data['B'])
     my_turtle = turtle.Turtle()
     turtle.setup(width=1400, height=800)
-    my_turtle.speed(6)
+    #my_turtle.speed(6)
     my_turtle.up()
     my_turtle.setpos(0, 300)
     my_turtle.down()
-    drawBeam(beam,my_turtle, horizontal_factor=800)
-    turtle.done()
+    #drawBeam(beam,my_turtle, horizontal_factor=800)
     compute_blank_value()
+    turtle.done()
+
