@@ -29,13 +29,13 @@ def create_beam(data):
     return beam
 
 
-def align_turtle(my_turtle):
+def align_turtle(my_turtle,forward_length):
     my_turtle.right(90)
-    my_turtle.forward(30)
+    my_turtle.forward(forward_length)
     my_turtle.left(90)
 
 
-def drawBeam(beam,my_turtle):
+def drawBeam(beam,my_turtle,vertical_factor = 30):
     '''
     pre 0 0 east
     post 0 0 east
@@ -43,23 +43,25 @@ def drawBeam(beam,my_turtle):
     :param my_turtle:
     :return:
     '''
-    horizontal_factor = 20
-    my_turtle.write(beam.name)
+    horizontal_factor = 40
+    my_turtle.write(beam.name,align="left", font=("Arial", 16, "normal"))
     start = my_turtle.position()
     for weight in beam.weights:
         dis = weight.distance_from_center * horizontal_factor
         print(dis)
         my_turtle.forward(dis)
         if type(weight.weight).__name__ != 'int':
-            align_turtle(my_turtle)
+            vertical_factor +=30
+            align_turtle(my_turtle,vertical_factor)
             drawBeam(weight.weight,my_turtle)
             my_turtle.up()
             my_turtle.goto(start)
             my_turtle.setheading(0)
             my_turtle.down()
         else:
-            align_turtle(my_turtle)
-            my_turtle.write(weight.weight)
+            align_turtle(my_turtle,vertical_factor)
+            my_turtle.write(weight.weight,align="center", font=("Arial", 16,
+                                                           "normal"))
             my_turtle.up()
             my_turtle.goto(start)
             my_turtle.setheading(0)
@@ -74,9 +76,9 @@ if __name__ == '__main__':
     beam = create_beam(tree_data['B'])
     print(beam)
     my_turtle = turtle.Turtle()
-    my_turtle.speed(1)
+    my_turtle.speed(6)
     my_turtle.up()
-    my_turtle.setpos(0,200)
+    my_turtle.setpos(0,300)
     my_turtle.down()
     drawBeam(beam,my_turtle)
     turtle.done()
