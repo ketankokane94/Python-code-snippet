@@ -208,6 +208,47 @@ def add_vertexes_on_escape_row(maze, escape):
             escape.addNeighbor(node,1)
 
 
+def __findPathDFS(current, end, visited):
+    """
+    Private recursive helper function that finds the path, if one exists,
+    from the current vertex to the end vertex
+    :param current (Vertex): The current vertex in the traversal
+    :param end (Vertex): The destination vertex
+    :param visited (set of Vertex): the vertices already visited
+    :return: A list of Vertex objects from start to end, if a path exists,
+        otherwise None
+    """
+
+    # A successful base case is when we traverse to the end vertex.  In this
+    # case, wrap it in a list and return it to the caller to construct the
+    # full path
+    if current == end:
+        return [current]
+    for neighbor in current.getConnections():
+        if neighbor not in visited:
+            visited.add(neighbor)
+            path = __findPathDFS(neighbor, end, visited)
+            # If the path is not None, current is part of the solution path,
+            # so add it to the front of the path list and return it
+            if path != None:
+                path.insert(0, current)
+                return path
+    # No path was found, so pass back None
+    return None
+
+def findPathDFS(start, end):
+    """
+    Find a path, if one exists, from a start to end vertex.
+    :param start (Vertex): the start vertex
+    :param end (Vertex): the destination vertex
+    :return: A list of Vertex objects from start to end, if a path exists,
+        otherwise None
+    """
+    visited = set()
+    visited.add(start)
+    return __findPathDFS(start, end, visited)
+
+
 def test():
     maze = Graph()
 
@@ -235,8 +276,33 @@ def test():
                                            '''
     for node in escape.getConnections():
         add_connections(maze,node,output_list)
-
     print(output_list)
+    paths = {}
+
+
+    for node in maze.getVertices():
+        if node is not escape:
+            path = findPathDFS(escape,maze.getVertex(node))
+            if path is not None:
+                if len(path) in paths:
+                    lst = paths[len(path)]
+                    lst.append(node)
+                    paths[len(path)] = lst
+                else:
+                    paths[len(path)] = [node]
+
+
+
+
+    print(paths)
+
+
+
+
+
+
+
+
 
 
 
