@@ -40,18 +40,8 @@ def rows(row,v,maze):
             v.addNeighbor(ele,1)
 
 
-def columns(col, v, maze):
-    list = maze.getVertices()
-    for ele in list:
-        elem = ele.split(',')
-        if elem[0] is col:
-            v.addNeighbor(ele,1)
-
-
 def add_neighbours_on_same_row_of_given_vertex(vertex, maze):
     rows(vertex.id.split(',')[1], vertex, maze)
-
-    #columns(current.id.split(',')[0],current,maze)
 
 
 def anything_to_left(vertex, maze):
@@ -205,9 +195,17 @@ def add_connections(maze, vertex,output_list):
 
     if vertex is not None:
         for node in vertex.getConnections():
-            add_connections(maze, maze.getVertex(node), output_list)
+            add_connections(maze, node, output_list)
 
 
+def add_vertexes_on_escape_row(maze, escape):
+    # maze escape is always on the last column
+    col = NO_OF_COLS - 1
+    row = ESCAPE_ROW
+    for _ in range(col, -1 ,-1 ):
+        node = maze.getVertex(str(_)+ ','+ str(row))
+        if node is not None:
+            escape.addNeighbor(node,1)
 
 
 def test():
@@ -215,29 +213,31 @@ def test():
 
     print('test maze reading')
     read_maze_from_file(maze,'test.txt')
-    list = maze.getVertices()
+
 
     # create escape node
     maze.addVertex('escape')
 
-    escape = maze.getVertex('4,1')
+    escape = maze.getVertex('escape')
     # connect vertices on escape node
-    add_neighbours_on_same_row_of_given_vertex(escape, maze)
+    add_vertexes_on_escape_row(maze,escape)
+    #add_neighbours_on_same_row_of_given_vertex(escape, maze)
 
     output_list = []
 
     for ele in escape.getConnections():
-        output_list.append(ele)
+        output_list.append(ele.id)
 
-
+    print(output_list)
     '''
     #check_if_vertex_has_anything_on_bottom(maze.getVertex('1,3'),maze,
                                            output_list)
                                            '''
     for node in escape.getConnections():
-        add_connections(maze,maze.getVertex(node),output_list)
+        add_connections(maze,node,output_list)
 
     print(output_list)
+
 
 
 if __name__ == '__main__':
