@@ -122,7 +122,7 @@ def anything_below(vertex, maze):
 
 def check_if_vertex_has_anything_on_left(vertex, maze,output_list):
     to_left = anything_to_left(vertex, maze)
-    if to_left is 'rock':
+    if to_left is 'rock' :
         # add nodes which are to the right side of the current node
         for _ in range(int(vertex.id.split(',')[0])+1,NO_OF_COLS):
             node = maze.getVertex(str(_)+ ','+ vertex.id.split(',')[1])
@@ -131,14 +131,12 @@ def check_if_vertex_has_anything_on_left(vertex, maze,output_list):
             elif node.id not in output_list:
                 vertex.addNeighbor(node, 1)
                 output_list.append(node.id)
-    elif to_left is 'wall':
-        pass
 
 
 def check_if_vertex_has_anything_on_right(vertex, maze,output_list):
     to_right = anything_to_right(vertex, maze)
 
-    if to_right is 'rock':
+    if to_right is 'rock'or to_right is 'wall':
         # add nodes which are to the right side of the current node
         for _ in range(int(vertex.id.split(',')[0]) - 1, -1, -1):
             node = maze.getVertex(str(_) + ',' + vertex.id.split(',')[1])
@@ -154,7 +152,7 @@ def check_if_vertex_has_anything_on_right(vertex, maze,output_list):
 def check_if_vertex_has_anything_on_top(vertex, maze,output_list):
     above = anything_to_top(vertex, maze)
 
-    if above is 'rock':
+    if above is 'rock' or above is 'wall':
         # add nodes which are to the bottom of the current node
         for _ in range((int(vertex.id.split(',')[1]) + 1),
                        NO_OF_ROWS):
@@ -171,7 +169,7 @@ def check_if_vertex_has_anything_on_top(vertex, maze,output_list):
 def check_if_vertex_has_anything_on_bottom(vertex, maze,output_list):
     below = anything_below(vertex, maze)
 
-    if below is 'rock':
+    if below is 'rock' or below is 'wall':
         # add nodes which are to above of the current
         # node
         for _ in range((int(vertex.id.split(',')[1]) - 1),
@@ -277,6 +275,7 @@ def test():
     for node in escape.getConnections():
         add_connections(maze,node,output_list)
     print(output_list)
+    print(len(output_list))
     paths = {}
 
 
@@ -284,17 +283,18 @@ def test():
         if node is not escape:
             path = findPathDFS(escape,maze.getVertex(node))
             if path is not None:
-                if len(path) in paths:
-                    lst = paths[len(path)]
+                if len(path)-1 in paths:
+                    lst = paths[len(path)-1]
                     lst.append(node)
-                    paths[len(path)] = lst
+                    paths[len(path)-1] = lst
                 else:
-                    paths[len(path)] = [node]
+                    paths[len(path)-1] = [node]
 
 
+    for key in paths.keys():
+        print(key ,paths[key])
 
-
-    print(paths)
+    #print(paths)
 
 
 
