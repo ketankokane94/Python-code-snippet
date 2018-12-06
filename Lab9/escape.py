@@ -54,6 +54,13 @@ def read_maze_from_file(graph, filename = 'test.txt'):
 
 
 def rows(row,v,maze):
+    '''
+    adds neighbour on the current row for a given vertex
+    :param row:
+    :param v:
+    :param maze:
+    :return:
+    '''
     list = maze.getVertices()
     for ele in list:
         elem = ele.split(',')
@@ -324,12 +331,9 @@ def get_path_every_bode_to_escape(maze, escape):
     return paths
 
 
-def test():
+def find_escape():
     maze = Graph()
-
-    print('test maze reading')
     read_maze_from_file(maze,'test.txt')
-
 
     # create escape node
     maze.addVertex('escape')
@@ -343,21 +347,12 @@ def test():
     for ele in escape.getConnections():
         output_list.append(ele.id)
 
-    print(output_list)
 
     for node in escape.getConnections():
         add_connections(maze,node,output_list)
 
-    print(output_list)
-
-    print(len(output_list))
-
     paths = get_path_every_bode_to_escape(maze,escape)
 
-    for key in paths.keys():
-        print(key, paths[key])
-
-    print('---------- output ---------')
     for index in range(1,len(paths.keys())):
 
         if index in paths.keys() and paths[index] is not None or []:
@@ -368,4 +363,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    find_escape()
