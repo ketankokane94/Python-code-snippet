@@ -1,0 +1,13 @@
+test1.txt
+
+this test maze does not contain any wall, 
+this is to check if the logic of not escaping blocks 
+and also to test if the graph starts from the correct row
+
+test2.txt
+
+this test maze contains a rock on 3rd block of escape row, 
+it is to test if the graph traversal logic stops on rock
+and reaches the other block when a rock is encountered
+by deciding where is the rock.
+eg. if rock is to top of the current block then the algorithm should add element below that rock
