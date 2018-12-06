@@ -11,3 +11,12 @@ it is to test if the graph traversal logic stops on rock
 and reaches the other block when a rock is encountered
 by deciding where is the rock.
 eg. if rock is to top of the current block then the algorithm should add element below that rock
+
+
+test3.txt
+
+this is the test to check when other than on the escape row no other block can be escaped
+the algorithm only makes a block if an escape from it is possible, so blocks which are rocks
+will never escape, so the algorithm never creates a those vertex, 
+this test also tests that the rock block should not be present in the graph, thus the reason for so many rock blocks
+
